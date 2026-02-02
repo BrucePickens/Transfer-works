@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Meal Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+
+    header {
+      background: #2c5f4e;
+      color: white;
+      padding: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    header button {
+      background: white;
+      color: #2c5f4e;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .hidden { display: none; }
+
+    main {
+      padding: 16px;
+    }
+
+    section {
+      display: none;
+    }
+
+    section:not(.hidden) {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .meal-item,
+    .ingredient-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .meal-item:last-child,
+    .ingredient-item:last-child {
+      border-bottom: none;
+    }
+
+    .meal-item-actions button {
+      margin-left: 6px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <button id="btnPlanner">Planner</button>
+  <button id="btnMeals">Meals</button>
+  <button id="btnGroceryList">Grocery List</button>
+  <button id="btnCategories">Categories</button>
+
+  <span style="flex:1"></span>
+
+  <button id="importDataBtn">Import</button>
+  <button id="exportDataBtn">Export</button>
+  <input type="file" id="importFileInput" accept=".json" hidden />
+</header>
+
+<main>
+
+  <!-- ================= PLANNER ================= -->
+  <section id="plannerSection" class="card">
+    <h2>Weekly Planner</h2>
+
+    <div class="day-card" data-day="sun">Sunday: <span></span><div class="planner-actions"></div></div>
+    <div class="day-card" data-day="mon">Monday: <span></span><div class="planner-actions"></div></div>
+    <div class="day-card" data-day="tue">Tuesday: <span></span><div class="planner-actions"></div></div>
+    <div class="day-card" data-day="wed">Wednesday: <span></span><div class="planner-actions"></div></div>
+    <div class="day-card" data-day="thu">Thursday: <span></span><div class="planner-actions"></div></div>
+    <div class="day-card" data-day="fri">Friday: <span></span><div class="planner-actions"></div></div>
+    <div class="day-card" data-day="sat">Saturday: <span></span><div class="planner-actions"></div></div>
+
+    <button id="clearWeekBtn">Clear Week</button>
+  </section>
+
+  <!-- ================= MEALS ================= -->
+  <section id="mealsSection" class="card hidden">
+    <h2>Meals</h2>
+
+    <input id="mealSearchInput" placeholder="Search meals…" />
+
+    <div id="mealList"></div>
+
+    <button id="addMealBtn">Add Meal</button>
+  </section>
+
+  <!-- ================= GROCERY LIST ================= -->
+  <section id="groceryListSection" class="card hidden">
+    <h2>Grocery List</h2>
+
+    <div id="groceryPrintListDisplay"></div>
+
+    <button id="syncIngredientsBtn">Load from Week Plan</button>
+    <button id="clearPrintListBtn">Clear List</button>
+    <button id="printGroceryListBtn">Print</button>
+  </section>
+
+  <!-- ================= CATEGORIES ================= -->
+  <section id="categoriesSection" class="card hidden">
+    <h2>Categories</h2>
+
+    <input id="newCategoryInput" placeholder="New category" />
+    <button id="addCategoryBtn">Add</button>
+
+    <div id="categoryList"></div>
+  </section>
+
+</main>
+
+<!-- ================= RECIPE OVERLAY ================= -->
+<div id="recipeOverlay" class="hidden">
+  <div class="card">
+    <h2 id="recipeMealTitle"></h2>
+    <input id="recipeMealNameEdit" class="hidden" />
+
+    <button id="editMealNameBtn">Edit Name</button>
+
+    <div id="recipeMetadata" class="hidden">
+      <div id="recipeCategoryCheckboxes"></div>
+    </div>
+
+    <h3>Ingredients</h3>
+    <ul id="recipeIngredientList"></ul>
+
+    <h3>Notes</h3>
+    <div id="recipeNotes"></div>
+
+    <h3>Attachments</h3>
+    <div id="recipeAttachments"></div>
+
+    <button id="addRecipeAttachmentBtn">Add Attachment</button>
+    <input type="file" id="recipeAttachmentFileInput" hidden />
+
+    <br /><br />
+    <button id="closeRecipeBtn">Close</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
