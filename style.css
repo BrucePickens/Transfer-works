@@ -389,7 +389,3 @@ button {
 #plannerCategoryList > div:hover {
   background: #f2f2f2;
 }
-.grocery-selected {
-  background: #e6f2ff;
-  border-radius: 4px;
-}
