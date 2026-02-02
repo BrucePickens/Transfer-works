@@ -1115,38 +1115,23 @@ Object.keys(ingredientSelections).forEach(item => {
     // Render grocery list in ingredientGroupOrder
     ingredientGroupOrder.forEach(groupName => {
         if (!groupedCounts[groupName]) return;
-const groupWrapper = document.createElement("div");
 
-const header = document.createElement("div");
-header.className = "ingredient-group-header";
-header.textContent = groupName;
-header.style.fontWeight = "bold";
-header.style.marginTop = "12px";
-header.style.cursor = "pointer";
+        const header = document.createElement("li");
+        header.className = "ingredient-group-header";
+        header.textContent = groupName;
+        header.style.fontWeight = "bold";
+        header.style.marginTop = "8px";
+        groceryListPreview.appendChild(header);
 
-const groupItems = document.createElement("ul");
-groupItems.style.listStyle = "none";
-groupItems.style.paddingLeft = "16px";
-
-groupWrapper.appendChild(header);
-groupWrapper.appendChild(groupItems);
-groceryListPreview.appendChild(groupWrapper);
-
+        const groupItems = document.createElement("ul");
+        groupItems.style.listStyle = "none";
+        groupItems.style.paddingLeft = "12px";
 
         Object.keys(groupedCounts[groupName]).forEach(item => {
             const count = groupedCounts[groupName][item];
- const li = document.createElement("li");
-li.textContent = `• ${item} × ${count}`;
-li.style.cursor = "pointer";
-li.dataset.item = item;
-
-// toggle selection
-li.onclick = () => {
-  li.classList.toggle("grocery-selected");
-};
-
-groupItems.appendChild(li);
-
+            const li = document.createElement("li");
+            li.textContent = `• ${item} × ${count}`;
+            groupItems.appendChild(li);
         });
 
         groceryListPreview.appendChild(groupItems);
@@ -1316,17 +1301,37 @@ if (!blob) {
 }
 
 
-// ===== Normal attachment load (DIRECT) =====
-const url = URL.createObjectURL(blob);
+    // ===== Normal attachment load =====
+    const url = URL.createObjectURL(blob);
 
-// Navigate directly to the PDF
-win.location.href = url;
+    win.document.open();
+    win.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${att.name || "Attachment"}</title>
+        <style>
+          html, body {
+            margin: 0;
+            height: 100%;
+            background: #111;
+          }
+          iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+          }
+        </style>
+      </head>
+      <body>
+        <iframe src="${url}"></iframe>
+      </body>
+      </html>
+    `);
+    win.document.close();
 
-// Cleanup after load
-win.onload = () => {
-  setTimeout(() => URL.revokeObjectURL(url), 10000);
-};
-
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   });
 };
 
@@ -1782,59 +1787,7 @@ if (editRecipeNotesBtn) {
 
     if (printGroceryBtn) {
     printGroceryBtn.onclick = () => window.print();
-} 
-
-const printSelectedGroceryBtn =
-  document.getElementById("printSelectedGroceryBtn");
-
-if (printSelectedGroceryBtn) {
-  printSelectedGroceryBtn.onclick = () => {
-    const selected =
-      document.querySelectorAll(
-        "#groceryListPreview .grocery-selected"
-      );
-
-    if (selected.length === 0) {
-      window.print();
-      return;
-    }
-
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return;
-
-    const items = Array.from(selected)
-      .map(li => `<li>${li.textContent}</li>`)
-      .join("");
-
-    printWindow.document.write(`
-      <html>
-      <head>
-        <title>Selected Grocery Items</title>
-        <style>
-          body {
-            font-family: system-ui, sans-serif;
-            padding: 24px;
-          }
-          li {
-            margin-bottom: 6px;
-            font-size: 16px;
-          }
-        </style>
-      </head>
-      <body>
-        <h2>Grocery List</h2>
-        <ul>${items}</ul>
-        <script>
-          window.onload = () => window.print();
-        </script>
-      </body>
-      </html>
-    `);
-
-    printWindow.document.close();
-  };
-}
-
+}  
 // ================= ATTACHMENTS EXPAND / COLLAPSE =================
 
 const toggleRecipeExpandBtn =
@@ -1863,93 +1816,6 @@ renderCategories();
     renderIngredientGroups();
     renderGroceryListPreview();
      showSection(plannerSection);
-   /* =========================================================
-   CLEANUP BROKEN ATTACHMENTS — BUTTON HANDLER
-========================================================= */
-
-const cleanupBrokenAttachmentsBtn =
-  document.getElementById("cleanupBrokenAttachmentsBtn");
-
-if (cleanupBrokenAttachmentsBtn) {
-  cleanupBrokenAttachmentsBtn.onclick = async () => {
-    const title =
-      document.getElementById("recipeMealTitle").textContent;
-
-    const meal = meals.find(m => m.name === title);
-    if (!meal || !Array.isArray(meal.attachments)) {
-      alert("No attachments to clean.");
-      return;
-    }
-
-    let removed = 0;
-    const kept = [];
-
-    for (const att of meal.attachments) {
-      if (!att || !att.id) continue;
-
-      const blob = await getAttachmentBlob(att.id);
-      if (blob) {
-        kept.push(att);
-      } else {
-        removed++;
-      }
-    }
-
-    if (removed === 0) {
-      alert("No broken attachments found.");
-      return;
-    }
-
-    meal.attachments = kept;
-    saveAll();
-    renderRecipeAttachments(meal);
-
-    alert(`Removed ${removed} broken attachment(s).`);
-  };
-}
-  
-    /* =========================================================
-   ONE-TIME BROKEN ATTACHMENT CLEANUP (AUTO)
-========================================================= */
-
-(async function removeBrokenAttachmentsOnce() {
-  const done = localStorage.getItem("mp_brokenAttachmentCleanupDone");
-  if (done) return;
-
-  let removedCount = 0;
-
-  for (const meal of meals) {
-    if (!Array.isArray(meal.attachments)) continue;
-
-    const kept = [];
-
-    for (const att of meal.attachments) {
-      if (!att || !att.id) continue;
-
-      const blob = await getAttachmentBlob(att.id);
-      if (blob) {
-        kept.push(att);
-      } else {
-        removedCount++;
-      }
-    }
-
-    meal.attachments = kept;
-  }
-
-  if (removedCount > 0) {
-    saveAll();
-    console.log(
-      `Removed ${removedCount} broken attachment reference(s)`
-    );
-  }
-
-  localStorage.setItem(
-    "mp_brokenAttachmentCleanupDone",
-    "true"
-  );
-})();
- 
 /* =========================================================
    ONE-TIME LEGACY MEAL MIGRATION (SAFE)
 ========================================================= */
@@ -2114,6 +1980,18 @@ if (cleanupBrokenAttachmentsBtn) {
         "true"
     );
 })();
+window.addEventListener("message", e => {
+  if (!e.data || e.data.type !== "REMOVE_BROKEN_ATTACHMENT") return;
+
+  const { mealId, attachmentIndex } = e.data;
+  const meal = meals.find(m => m.id === mealId);
+  if (!meal || !meal.attachments) return;
+
+  meal.attachments.splice(attachmentIndex, 1);
+  saveAll();
+
+  renderRecipeAttachments(meal);
+});
 
 });
 
