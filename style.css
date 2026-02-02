@@ -1,0 +1,307 @@
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f5f5;
+  color: #222;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
+   HEADER / NAV
+========================================================= */
+
+header {
+  background: #2c5f4e;
+  color: white;
+  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+header button {
+  background: white;
+  color: #2c5f4e;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+header button.active {
+  background: #1e4538;
+  color: white;
+}
+
+header button:hover {
+  opacity: 0.9;
+}
+
+/* =========================================================
+   MAIN / SECTIONS
+========================================================= */
+
+main {
+  padding: 16px;
+}
+
+section {
+  display: none;
+}
+
+section:not(.hidden) {
+  display: block;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* =========================================================
+   PLANNER
+========================================================= */
+
+.day-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 6px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.day-card:last-child {
+  border-bottom: none;
+}
+
+.day-card span {
+  font-weight: 500;
+}
+
+.planner-actions button {
+  margin-left: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+/* =========================================================
+   MEALS
+========================================================= */
+
+#mealSearchInput {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.meal-category-header {
+  font-weight: 700;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.meal-category-header.open {
+  color: #2c5f4e;
+}
+
+.meal-category-list {
+  display: none;
+  padding-left: 12px;
+}
+
+.meal-category-list.open {
+  display: block;
+}
+
+.meal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.meal-item:last-child {
+  border-bottom: none;
+}
+
+.meal-item-name {
+  cursor: pointer;
+}
+
+.meal-item-actions button {
+  margin-left: 6px;
+  font-size: 13px;
+}
+
+/* =========================================================
+   CATEGORIES
+========================================================= */
+
+.category-tag {
+  display: flex;
+  align-items: center;
+  background: #eef4f2;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.category-tag span {
+  flex: 1;
+}
+
+.category-meals {
+  padding-left: 16px;
+  margin-bottom: 8px;
+}
+
+.delete-btn {
+  background: #c62828;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 8px;
+}
+
+/* =========================================================
+   GROCERY PRINT LIST
+========================================================= */
+
+.grocery-print-category {
+  margin-bottom: 16px;
+}
+
+.grocery-print-header {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.grocery-print-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.grocery-print-item span {
+  flex: 1;
+}
+
+.remove-print-item {
+  background: #c62828;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+/* =========================================================
+   INGREDIENT GROUPS
+========================================================= */
+
+.ingredient-group-card {
+  border-radius: 8px;
+  background: #2c5f4e;
+  color: white;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.ingredient-group-header {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ingredient-group-content {
+  background: #f9f9f9;
+  color: #222;
+  padding: 10px;
+}
+
+.ingredient-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.ingredient-item:last-child {
+  border-bottom: none;
+}
+
+/* =========================================================
+   RECIPE OVERLAY
+========================================================= */
+
+#recipeOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+#recipeOverlay .card {
+  max-width: 900px;
+  margin: auto;
+}
+
+#recipeAttachments button {
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+/* =========================================================
+   MODALS / BUTTONS
+========================================================= */
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+/* =========================================================
+   PRINT
+========================================================= */
+
+@media print {
+  header,
+  button {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+}
